@@ -1,0 +1,19 @@
+{
+  "name": "meteo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "getMeteo.js",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "jsdom": "^15.1.1",
+    "node-html-parser": "^1.1.16",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
