@@ -8,9 +8,10 @@ const BEGGIN = 1881;
 const END = 2019;
 const promises = [];
 var tempMoyenne = new Array(END - BEGGIN);
+var pluviometries = new Array(END - BEGGIN);
 var mois = getMoisSaisie();
 const moisDeAnnee = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-fs.unlink(`.\\releverTemperature_${moisDeAnnee[parseInt(mois) - 1]}.csv`, (err) => {
+fs.unlink(`.\\relever_${moisDeAnnee[parseInt(mois) - 1]}.csv`, (err) => {
 	if (err) {
 		console.error(err);
 		return;
@@ -35,8 +36,10 @@ function getAllTemperaturesAnnuelMoyenneByMonth(annee) {
       }
       const $ = cheerio.load(body);
       var temperatureMoyenne = $('#tabStats tr').last().find("td").eq(3).html().split('&')[0].replace('.', ',');
+      var pluviometrie = $('#tabStats tr').last().find("td").eq(4).html().split('m')[0].replace('.', ',');
 			var anneeUrl = parseInt(response.client._httpMessage.path.substring(response.client._httpMessage.path.length - 6, response.client._httpMessage.path.length - 2));
 			tempMoyenne[END - anneeUrl] = temperatureMoyenne;
+			pluviometries[END - anneeUrl] = pluviometrie;
 			resolve(temperatureMoyenne);
     });
   });
@@ -47,14 +50,14 @@ for (let i = BEGGIN; i < END; i++) {
 }
 
 Promise.all(promises).then(response => {
-	var printTemperature = `Annee ; ${moisDeAnnee[parseInt(mois) - 1]} \r\n`;
+	var printTemperature = `Annee ; Temperature moyenne ${moisDeAnnee[parseInt(mois) - 1]} ; Pluviometrie ${moisDeAnnee[parseInt(mois) - 1]} \r\n`;
 	for (let i = BEGGIN; i < END; i++) {
-		printTemperature = `${printTemperature} ${i} ; ${tempMoyenne[END - i]} \r\n`;
+		printTemperature = `${printTemperature} ${i} ; ${tempMoyenne[END - i]} ; ${pluviometries[END - i]} \r\n`;
 	}
-	fs.appendFile(`.\\releverTemperature_${moisDeAnnee[parseInt(mois) - 1]}.csv`, printTemperature, function (err) {
+	fs.appendFile(`.\\relever_${moisDeAnnee[parseInt(mois) - 1]}.csv`, printTemperature, function (err) {
 		if (err) {
 			return console.log(err);
 		}
-		console.log(`Température du mois : ${moisDeAnnee[parseInt(mois) - 1]} sauvegarder`);
+		console.log(`Relevé du mois : ${moisDeAnnee[parseInt(mois) - 1]} sauvegarder`);
 	});
 });
