@@ -1,7 +1,7 @@
-# Donne les relever des moyennes moyenne mensuel depuis la création des relever de température 1881.
+# Donne les relevés des moyennes des températures moyennes mensuelles depuis la création des relevés de température 1881.
 Source des infomations https://www.meteo.bzh/
  
-Ville couverte par le site www.meteo.bzh :
+Villes couvertes par le site www.meteo.bzh :
 - 1 : "Angers-Beaucouze"
 - 2 :  "Belle-Ile-Le-Talut"
 - 3 : "Brest-Guipavas"
@@ -34,7 +34,7 @@ Ville couverte par le site www.meteo.bzh :
 - 30 : "Vannes-Meucon"
 - 31 : "Vannes-Sene"
 
-#Usage 
+# Usage 
 
 $ node getMeteo.js <numéro_mois> <numéro_ville>
 
