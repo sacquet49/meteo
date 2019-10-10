@@ -6,64 +6,55 @@ var request = require("request");
 
 const BEGGIN = 1881;
 const END = 2019;
-
-function getMeteo(annee, mois) {
-	return new Promise(function(resolve, reject) {
-		var url = "https://www.meteo.bzh/climatologie-mensuelle-Nantes-Atlantique/".concat(annee).concat(mois);
-		Request.get(url, (error, response, body) => {
-			if (error) {
-				return console.dir(error);
-			}
-			const $ = cheerio.load(body);
-			resolve($('#tabStats tr').last().find("td").eq(3).html().split('&')[0].replace('.', ','));
-		});
-	});
-}
-
-async function getTemperature(annee, mois) {
-	try {
-		const temperature = await getMeteo(annee, mois);
-		return temperature;
-	} catch (error) {
-		console.error('ERROR:');
-		console.error(error);
-	}
-}
-
+const promises = [];
 var tempMoyenne = new Array(END - BEGGIN);
-for (let i = BEGGIN; i < END; i++) {
-	tempMoyenne[BEGGIN + i] =  new Array(12);
-	for (let j = 1; j < 13; j++) {
-		var jp = j;
-		if(j < 10) {
-			jp = "0" + j.toString();
-		}
-		/*tempMoyenne[i][parseInt(jp) - 1] =*/ getTemperature(i, jp);
-	}
-	setTimeout(function(){
-		//do what you need here
-	}, 1000);
-}
-
-/*fs.unlink("C:\\Users\\duclo\\Desktop\\meteo\\relever.csv", (err) => {
+var mois = getMoisSaisie();
+const moisDeAnnee = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+fs.unlink(`.\\releverTemperature_${moisDeAnnee[parseInt(mois) - 1]}.csv`, (err) => {
 	if (err) {
 		console.error(err);
 		return;
 	}
-});*/
-
-/*Request.get(url, (error, response, body) => {
-	if (error) {
-		return console.dir(error);
-	}
-	var mois = parseInt(response.client._httpMessage.path.substring(response.client._httpMessage.path.length - 2, response.client._httpMessage.path.length));
-	var annee = response.client._httpMessage.path.substring(response.client._httpMessage.path.length - 6, response.client._httpMessage.path.length - 2);
-	const $ = cheerio.load(body);
-	tempMoyenne[annee][mois] = $('#tabStats tr').last().find("td").eq(3).html().split('&')[0].replace('.', ',') + ";";
 });
-fs.appendFile("C:\\Users\\duclo\\Desktop\\meteo\\relever.csv", i + "; " + tempMoyenne + '\r\n', function (err) {
-    if (err) {
-        return console.log(err);
-    }
-    console.log("Température de l'année : " + i + " sauvegarder");
-});*/
+
+function getMoisSaisie() {
+	const month = process.argv.slice(2);
+	if (month < 10) {
+		return "0" + month.toString();
+	}
+	return month;
+}
+
+function getAllTemperaturesAnnuelMoyenneByMonth(annee) {
+  return new Promise(function (resolve, reject) {
+		setTimeout( function() {}, 1000);
+    var url = "https://www.meteo.bzh/climatologie-mensuelle-Nantes-Atlantique/".concat(annee).concat(mois);
+    Request.get(url, (error, response, body) => {
+      if (error) {
+        return console.dir(error);
+      }
+      const $ = cheerio.load(body);
+      var temperatureMoyenne = $('#tabStats tr').last().find("td").eq(3).html().split('&')[0].replace('.', ',');
+			var anneeUrl = parseInt(response.client._httpMessage.path.substring(response.client._httpMessage.path.length - 6, response.client._httpMessage.path.length - 2));
+			tempMoyenne[END - anneeUrl] = temperatureMoyenne;
+			resolve(temperatureMoyenne);
+    });
+  });
+}
+
+for (let i = BEGGIN; i < END; i++) {
+  promises.push(getAllTemperaturesAnnuelMoyenneByMonth(i));
+}
+
+Promise.all(promises).then(response => {
+	var printTemperature = `Annee ; ${moisDeAnnee[parseInt(mois) - 1]} \r\n`;
+	for (let i = BEGGIN; i < END; i++) {
+		printTemperature = `${printTemperature} ${i} ; ${tempMoyenne[END - i]} \r\n`;
+	}
+	fs.appendFile(`.\\releverTemperature_${moisDeAnnee[parseInt(mois) - 1]}.csv`, printTemperature, function (err) {
+		if (err) {
+			return console.log(err);
+		}
+		console.log(`Température du mois : ${moisDeAnnee[parseInt(mois) - 1]} sauvegarder`);
+	});
+});
