@@ -6,7 +6,7 @@ var request = require("request");
 
 const BEGGIN = 1881;
 const END = 2019;
-const promises = [];
+const promisesOfPagesCanHaveTemperature = [];
 var tempMoyenne = new Array(END - BEGGIN);
 var pluviometries = new Array(END - BEGGIN);
 var mois = getMoisSaisie();
@@ -93,10 +93,10 @@ function getAllTemperaturesAnnuelMoyenneByMonth(annee) {
 }
 
 for (let i = BEGGIN; i < END; i++) {
-    promises.push(getAllTemperaturesAnnuelMoyenneByMonth(i));
+    promisesOfPagesCanHaveTemperature.push(getAllTemperaturesAnnuelMoyenneByMonth(i));
 }
 
-Promise.all(promises).then(response => {
+Promise.all(promisesOfPagesCanHaveTemperature).then(response => {
     var printTemperature = `Annee ; Temperature moyenne ${moisDeAnnee[parseInt(mois) - 1]} ; Pluviometrie ${moisDeAnnee[parseInt(mois) - 1]} \r\n`;
     for (let i = BEGGIN; i < END; i++) {
         printTemperature = `${printTemperature} ${i} ; ${tempMoyenne[END - i]} ; ${pluviometries[END - i]} \r\n`;
