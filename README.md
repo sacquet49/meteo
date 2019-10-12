@@ -36,9 +36,9 @@ Villes couvertes par le site www.meteo.bzh :
 
 # Usage 
 
-$ node getMeteo.js <numéro_mois> <numéro_ville>
+$ babel-node getMeteo.js <numéro_mois> <numéro_ville>
 
 ### Exemple pour la ville d'Angers au mois de janvier. 
-$ node getMeteo.js 1 1
+$ babel-node getMeteo.js 1 1
 
 En sortie un fichier csv est créé avec pour titre "relever_Février_Angers-Beaucouze.csv"
