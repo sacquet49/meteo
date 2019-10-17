@@ -41,4 +41,6 @@ $ babel-node getMeteo.js <numéro_mois> <numéro_ville>
 ### Exemple pour la ville d'Angers au mois de janvier. 
 $ babel-node getMeteo.js 1 1
 
-En sortie un fichier csv est créé avec pour titre "relever_Février_Angers-Beaucouze.csv"
+En sortie un fichier csv est créé avec pour titre "relever_Février_Angers-Beaucouze.csv" et "relever_Février_Angers-Beaucouze.json"
+
+$ curl -X PUT "localhost:9200/_bulk" -H "Content-Type: application/json" --data-binary @relever_Octobre_Nantes-Atlantique.json

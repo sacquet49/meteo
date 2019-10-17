@@ -21,6 +21,12 @@ export class MeteoService {
                 return;
             }
         });
+        fs.unlink(`.\\relever_${MOISANNEE[parseInt(mois) - 1]}_${EMPLACEMENTS[parseInt(this.emplacement) - 1]}.json`, (err) => {
+            if (err) {
+                console.error(err);
+                return;
+            }
+        });
     }
 
     getTemperaturesAnnuelMoyenne(annee) {
@@ -63,7 +69,10 @@ export class MeteoService {
         for (let i = this.BEGGIN; i < this.END; i++) {
             this.promisesOfPagesCanHaveTemperature.push(this.getTemperaturesAnnuelMoyenne(i));
         }
-        Promise.all(this.promisesOfPagesCanHaveTemperature).then(response => this.exportMeteoToCsv());
+        Promise.all(this.promisesOfPagesCanHaveTemperature).then(response => {
+            this.exportMeteoToCsv();
+            this.exportMeteoToJSONElastic();
+        });
     }
 
     exportMeteoToCsv() {
@@ -74,6 +83,25 @@ export class MeteoService {
             printTemperature = `${printTemperature} ${i} ; ${this.tempMoyenne[this.END - i]} ; ${this.pluviometries[this.END - i]} \r\n`;
         }
         fs.appendFile(`.\\relever_${MOISANNEE[parseInt(this.mois) - 1]}_${EMPLACEMENTS[parseInt(this.emplacement) - 1]}.csv`, printTemperature, function (err) {
+            if (err) {
+                return console.log(err);
+            }
+            console.log(message);
+        });
+    }
+
+    exportMeteoToJSONElastic() {
+        var printTemperature = ``;
+        var message = `Relevé du mois ${MOISANNEE[parseInt(this.mois) - 1]} sauvegarder pour la ville de ${EMPLACEMENTS[parseInt(this.emplacement) - 1]}`;
+        var index = `${MOISANNEE[parseInt(this.mois) - 1]}_${EMPLACEMENTS[parseInt(this.emplacement) - 1]}`.toLowerCase();
+
+        for (let i = this.BEGGIN; i < this.END; i++) {
+            var temp = `${this.tempMoyenne[this.END - i]}`.replace(',', '.');
+            var pluie = `${this.pluviometries[this.END - i]}`.replace(',', '.');
+            printTemperature = `${printTemperature} {"index" : {"_index": "${index}", "_type":"releve", "_id": ${i}} \r\n`;
+            printTemperature = `${printTemperature} {"fields" : {"annee": "${i}-${this.mois}-01T00:00:00Z", "temperature_moyenne": ${temp}, "pluviometrie": ${pluie} }} \r\n`;
+        }
+        fs.appendFile(`.\\relever_${MOISANNEE[parseInt(this.mois) - 1]}_${EMPLACEMENTS[parseInt(this.emplacement) - 1]}.json`, printTemperature, function (err) {
             if (err) {
                 return console.log(err);
             }
