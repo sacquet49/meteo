@@ -1,7 +1,32 @@
-# Donne les relevés des moyennes des températures moyennes mensuelles depuis la création des relevés de températures en 1881.
+# Donne les relevés des moyennes mensuelles depuis la création des relevés de températures en 1881.
 Source des infomations https://www.meteo.bzh/
+
+# Techno
+- Docker
+- NodeJs
+- ElasticSearch
+- Kibana  
+
+# Demarage
+
+- Installer docker et docker-compose sur votre machine.
+- Rendez-vous dans le répertoire docker pour instancier un service elasticSearch et kibana.
+$ docker-compose up --build
+
+## Usage 
+
+$ babel-node getMeteo.js <numéro_mois> <numéro_ville>
+
+### Exemple pour la ville d'Angers au mois de janvier. 
+$ babel-node getMeteo.js 1 1
+
+Ensuite ouvrez un navigateur et rendez vous sur l'adresse 
+ http://localhost:9200/janvier_angers-beaucouze/_doc/_search?pretty  
+
+Vous devez avoir les résultats des température dans la base de données.  
+A partir de kibana (http://localhost:5601) vous allez pouvoir exploité ces résultats.
  
-Villes couvertes par le site www.meteo.bzh :
+### Villes couvertes par le site www.meteo.bzh :
 - 1 : "Angers-Beaucouze"
 - 2 :  "Belle-Ile-Le-Talut"
 - 3 : "Brest-Guipavas"
@@ -34,13 +59,3 @@ Villes couvertes par le site www.meteo.bzh :
 - 30 : "Vannes-Meucon"
 - 31 : "Vannes-Sene"
 
-# Usage 
-
-$ babel-node getMeteo.js <numéro_mois> <numéro_ville>
-
-### Exemple pour la ville d'Angers au mois de janvier. 
-$ babel-node getMeteo.js 1 1
-
-En sortie un fichier csv est créé avec pour titre "relever_Février_Angers-Beaucouze.csv" et "relever_Février_Angers-Beaucouze.json"
-
-$ curl -X PUT "localhost:9200/_bulk" -H "Content-Type: application/json" --data-binary @relever_Octobre_Nantes-Atlantique.json

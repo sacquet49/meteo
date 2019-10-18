@@ -58,7 +58,7 @@ export class MeteoService {
         moyenne = moyenne + parseFloat($(this).find('td').eq(index).html());
       }
     });
-    this.tempMoyenne[this.END - anneeUrl] = Number.parseFloat(moyenne / joursDuMois).toFixed(2).toString();
+    return Number.parseFloat(moyenne / joursDuMois).toFixed(2).toString();
   }
 
   getTemperaturesAnnuelMoyenneByMonth() {
