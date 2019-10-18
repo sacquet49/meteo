@@ -71,8 +71,7 @@ export class MeteoService {
   }
 
   insertMeteoToElastic() {
-    var message = `Relevé du mois ${MOISANNEE[parseInt(this.mois) - 1]} sauvegarder pour la ville de ${EMPLACEMENTS[parseInt(this.emplacement) - 1]}`;
-    var index = `${MOISANNEE[parseInt(this.mois) - 1]}_${EMPLACEMENTS[parseInt(this.emplacement) - 1]}`.toLowerCase();
+    var index = `${EMPLACEMENTS[parseInt(this.emplacement) - 1]}_${MOISANNEE[parseInt(this.mois) - 1]}`.toLowerCase();
     var option = {"headers": {'Content-Type': 'application/json'}};
 
     this.createMappingElastic(index, option);
