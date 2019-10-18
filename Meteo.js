@@ -33,8 +33,10 @@ export const EMPLACEMENTS = ["Angers-Beaucouze",
     "Vannes-Sene"];
 
 export class Meteo {
-    constructor() {
-        temperatureMoyenne;
-        pluviometrie;
+    constructor(temperatureMin, temperatureMax, temperatureMoyenne, pluviometrie) {
+        this.temperatureMin = temperatureMin;
+        this.temperatureMax = temperatureMax;
+        this.temperatureMoyenne = temperatureMoyenne;
+        this.pluviometrie = pluviometrie;
     }
 }
