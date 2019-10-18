@@ -24,7 +24,7 @@ Ensuite ouvrez un navigateur et rendez vous sur l'adresse
  http://localhost:9200/janvier_angers-beaucouze/_doc/_search?pretty  
 
 Vous devez avoir les résultats des température dans la base de données.  
-A partir de kibana (http://localhost:5601) vous allez pouvoir exploité ces résultats.
+A partir de kibana (http://localhost:5601) vous allez pouvoir exploiter ces résultats.
  
 ### Villes couvertes par le site www.meteo.bzh :
 - 1 : "Angers-Beaucouze"
